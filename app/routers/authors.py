@@ -3,7 +3,13 @@ from typing import Annotated, List
 from fastapi import APIRouter, Query, Path, HTTPException
 
 from app.dependencies import get_db, get_session
-from app.crud.author import get_authors, create_author, get_author, update_author
+from app.crud.author import (
+    get_authors,
+    create_author,
+    get_author,
+    update_author,
+    delete_author,
+)
 from app.schemas.author import AuthorResponse, AuthorCreate, AuthorUpdate
 
 router = APIRouter(tags=["authors"])
@@ -62,3 +68,16 @@ async def update_author_view(
         bio=author.bio,
         born_date=author.born_date,
     )
+
+
+@router.delete("/api/authors/{id}")
+async def delete_author_view(id: Annotated[int, Path(ge=0)]):
+    db = get_session()
+
+    existing_author = get_author(db, id)
+    if existing_author is None:
+        raise HTTPException(status_code=404, detail="author not found.")
+
+    delete_author(db, existing_author)
+
+    return {"message": "author deleted."}

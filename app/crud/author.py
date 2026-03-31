@@ -64,3 +64,8 @@ def update_author(db: Session, existing_author: Author, data: AuthorUpdate) -> A
     db.commit()
 
     return existing_author
+
+
+def delete_author(db: Session, existing_author: Author) -> None:
+    db.delete(existing_author)
+    db.commit()
