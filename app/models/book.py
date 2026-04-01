@@ -9,13 +9,14 @@ class Book(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True, nullable=False)
     title: Mapped[str] = mapped_column(String(length=255), nullable=False)
-    description: Mapped[str] = mapped_column(Text)
-    isbn: Mapped[str] = mapped_column(String(length=20), unique=True)
-    published_year: Mapped[int] = mapped_column(Integer)
-    pages: Mapped[int] = mapped_column(Integer)
+    description: Mapped[str] = mapped_column(Text, nullable=True)
+    isbn: Mapped[str] = mapped_column(String(length=20), unique=True, nullable=True)
+    published_year: Mapped[int] = mapped_column(Integer, nullable=True)
+    pages: Mapped[int] = mapped_column(Integer, nullable=True)
     author_id: Mapped[int] = mapped_column(ForeignKey("authors.id", ondelete="CASCADE"))
 
     author: Mapped["Author"] = relationship(back_populates="books")
+    genres = relationship("Genre", secondary="book_genres", back_populates="books")
 
     def __str__(self):
         return f"{self.id}. {self.title}"
